@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<h1>Danh sách bài viết</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+    </tr>
+    </thead>
+    <tbody id="data-table">
+    <!-- Dữ liệu sẽ được hiển thị ở đây -->
+    </tbody>
+</table>
+
+<div id="detail">
+    <h2>Chi tiết</h2>
+    <p><strong>Title:</strong> <span id="detail-title"></span></p>
+    <p><strong>Body:</strong> <span id="detail-body"></span></p>
+    <p><strong>Time:</strong> <span id="detail-time"></span></p>
+</div>
+
+<script>
+    // Giả sử API trả về dữ liệu theo định dạng JSON
+    const apiUrl = 'https://57kmt.duckdns.org/android/api.aspx?action=last_id';
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            let tableContent = '';
+            data.forEach(item => {
+                tableContent += `
+                    <tr onclick="showDetails(${item.id})">
+                        <td>${item.id}</td>
+                        <td>${item.title}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('data-table').innerHTML = tableContent;
+        })
+        .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
+
+    function showDetails(id) {
+        // Lấy thông tin chi tiết cho ID đã chọn
+        fetch(apiUrl + '/' + id)
+            .then(response => response.json())
+            .then(item => {
+                document.getElementById('detail-title').innerText = item.title;
+                document.getElementById('detail-body').innerText = item.body;
+                document.getElementById('detail-time').innerText = item.time || 'Chưa có dữ liệu';
+            })
+            .catch(error => console.error('Lỗi khi lấy chi tiết:', error));
+    }
+</script>
+</body>
+</html>
