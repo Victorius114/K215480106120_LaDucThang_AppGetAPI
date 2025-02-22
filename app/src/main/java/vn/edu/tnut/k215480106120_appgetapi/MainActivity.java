@@ -1,54 +1,33 @@
 package vn.edu.tnut.k215480106120_appgetapi;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView resultTextView;
-    private DataFetcher dataFetcher;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        resultTextView = findViewById(R.id.status_text);
+        // Tìm WebView và thiết lập cài đặt
+        webView = findViewById(R.id.webView);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true); // Bật JavaScript nếu cần
 
-        // Khởi tạo DataFetcher
-        dataFetcher = new DataFetcher(this);
+        // Để WebView mở link trong app thay vì trình duyệt
+        webView.setWebViewClient(new WebViewClient());
 
-        // Khởi tạo nút và sự kiện khi bấm
-        Button getLastIdButton = findViewById(R.id.get_lastid);
-        getLastIdButton.setOnClickListener(v -> dataFetcher.fetchDataFromApi(new DataFetcher.DataFetcherCallback() {
-            @Override
-            public void onDataFetched(String data) {
-                resultTextView.setText(data);
-
-                // Hiển thị thông báo
-                Toast.makeText(MainActivity.this, "Last ID: " + data, Toast.LENGTH_SHORT).show();
-            }
-        }));
-
-        // Bắt đầu việc lấy dữ liệu mỗi 30 giây
-        dataFetcher.startFetchingData(new DataFetcher.DataFetcherCallback() {
-            @Override
-            public void onDataFetched(String data) {
-                resultTextView.setText(data);
-
-                // Hiển thị thông báo
-                Toast.makeText(MainActivity.this, "Last ID: " + data, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Dừng việc lấy dữ liệu khi Activity bị hủy
-        dataFetcher.stopFetchingData();
+        // Load trang HTML bạn đã tạo
+        webView.loadUrl("file:///android_asset/index.html");
     }
 }

@@ -3,71 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Data</title>
+    <title>Danh sách Bài viết</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .post { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+        button { padding: 10px; margin: 5px; }
     </style>
 </head>
 <body>
-<h1>Danh sách bài viết</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-    </tr>
-    </thead>
-    <tbody id="data-table">
-    <!-- Dữ liệu sẽ được hiển thị ở đây -->
-    </tbody>
-</table>
-
-<div id="detail">
-    <h2>Chi tiết</h2>
-    <p><strong>Title:</strong> <span id="detail-title"></span></p>
-    <p><strong>Body:</strong> <span id="detail-body"></span></p>
-    <p><strong>Time:</strong> <span id="detail-time"></span></p>
+<div class="container">
+    <h2>Danh sách Bài viết</h2>
+    <button onclick="fetchData()">Tải dữ liệu</button>
+    <button onclick="prevPost()">Lùi</button>
+    <button onclick="nextPost()">Tiến</button>
+    <div id="postContainer"></div>
 </div>
 
 <script>
-    // Giả sử API trả về dữ liệu theo định dạng JSON
-    const apiUrl = 'https://57kmt.duckdns.org/android/api.aspx?action=last_id';
+    let posts = [];
+    let index = 0;
 
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            let tableContent = '';
-            data.forEach(item => {
-                tableContent += `
-                    <tr onclick="showDetails(${item.id})">
-                        <td>${item.id}</td>
-                        <td>${item.title}</td>
-                    </tr>
-                `;
-            });
-            document.getElementById('data-table').innerHTML = tableContent;
-        })
-        .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
-
-    function showDetails(id) {
-        // Lấy thông tin chi tiết cho ID đã chọn
-        fetch(apiUrl + '/' + id)
+    function fetchData() {
+        fetch('https://jsonplaceholder.typicode.com/posts/')
             .then(response => response.json())
-            .then(item => {
-                document.getElementById('detail-title').innerText = item.title;
-                document.getElementById('detail-body').innerText = item.body;
-                document.getElementById('detail-time').innerText = item.time || 'Chưa có dữ liệu';
-            })
-            .catch(error => console.error('Lỗi khi lấy chi tiết:', error));
+            .then(data => {
+                posts = data;
+                index = 0;
+                displayPost();
+            });
+    }
+
+    function displayPost() {
+        if (posts.length === 0) return;
+        const post = posts[index];
+        document.getElementById('postContainer').innerHTML = `
+            <div class="post">
+                <h3>${post.title}</h3>
+                <p>${post.body}</p>
+                <small>User ID: ${post.userId}, Post ID: ${post.id}</small>
+            </div>
+        `;
+    }
+
+    function prevPost() {
+        if (index > 0) {
+            index--;
+            displayPost();
+        }
+    }
+
+    function nextPost() {
+        if (index < posts.length - 1) {
+            index++;
+            displayPost();
+        }
     }
 </script>
 </body>
