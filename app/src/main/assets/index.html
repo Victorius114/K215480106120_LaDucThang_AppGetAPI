@@ -3,62 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách Bài viết</title>
+    <title>Hiển thị từ Firebase</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .post { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
-        button { padding: 10px; margin: 5px; }
+        .hienthi{
+            font-size: 25px;
+        }
     </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+        // Cấu hình Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDaEMf6wwjYH9Ez_Pj8ToYkdVMNYTXXzFM",
+            authDomain: "btvn-k215480106120-27-12.firebaseapp.com",
+            databaseURL: "https://btvn-k215480106120-27-12-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "btvn-k215480106120-27-12",
+            storageBucket: "btvn-k215480106120-27-12.appspot.com",
+            messagingSenderId: "343588762119",
+            appId: "1:343588762119:web:146e254c0eb9e039a9f0a2",
+            measurementId: "G-4VK88TXLPV"
+        };
+
+        // Khởi tạo Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Hàm theo dõi dữ liệu trong thời gian thực
+        function listenForChanges() {
+            const dbRef = ref(db, 'messages/1');
+
+            onValue(dbRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const jsonData = snapshot.val();
+                    document.getElementById('json-output').textContent = JSON.stringify(jsonData, null, 2);
+                } else {
+                    document.getElementById('json-output').textContent = 'Không có dữ liệu';
+                }
+            }, (error) => {
+                console.error("Lỗi khi lắng nghe dữ liệu:", error);
+            });
+        }
+
+        // Khi trang tải xong, gọi listenForChanges()
+        window.onload = () => {
+            listenForChanges();
+        };
+
+
+    </script>
 </head>
 <body>
-<div class="container">
-    <h2>Danh sách Bài viết</h2>
-    <button onclick="fetchData()">Tải dữ liệu</button>
-    <button onclick="prevPost()">Lùi</button>
-    <button onclick="nextPost()">Tiến</button>
-    <div id="postContainer"></div>
-</div>
 
-<script>
-    let posts = [];
-    let index = 0;
+<h1>Dữ liệu từ Firebase Realtime Database</h1>
+<p class="hienthi"><strong>Dữ liệu JSON:</strong></p>
+<pre id="json-output" class="hienthi"></pre>
 
-    function fetchData() {
-        fetch('https://jsonplaceholder.typicode.com/posts/')
-            .then(response => response.json())
-            .then(data => {
-                posts = data;
-                index = 0;
-                displayPost();
-            });
-    }
-
-    function displayPost() {
-        if (posts.length === 0) return;
-        const post = posts[index];
-        document.getElementById('postContainer').innerHTML = `
-            <div class="post">
-                <h3>${post.title}</h3>
-                <p>${post.body}</p>
-                <small>User ID: ${post.userId}, Post ID: ${post.id}</small>
-            </div>
-        `;
-    }
-
-    function prevPost() {
-        if (index > 0) {
-            index--;
-            displayPost();
-        }
-    }
-
-    function nextPost() {
-        if (index < posts.length - 1) {
-            index++;
-            displayPost();
-        }
-    }
-</script>
 </body>
 </html>
