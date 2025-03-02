@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "343588762119",
+    "firebase_url": "https://btvn-k215480106120-27-12-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "btvn-k215480106120-27-12",
+    "storage_bucket": "btvn-k215480106120-27-12.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343588762119:android:ad40987a106f4b83a9f0a2",
+        "android_client_info": {
+          "package_name": "vn.edu.tnut.k215480106120_appgetapi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0BlgPS5rMHNlEi-hYfVMXzbhNRzAr-lk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
